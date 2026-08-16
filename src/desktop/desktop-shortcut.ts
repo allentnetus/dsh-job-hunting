@@ -59,7 +59,7 @@ const isPathWithin = (root: string, candidate: string): boolean => {
   );
 };
 
-const normalizeComparablePath = (value: string): string => path.normalize(value).toLowerCase();
+const normalizeComparablePath = (value: string): string => path.win32.normalize(value).toLowerCase();
 
 const isNonEmptyString = (value: unknown): value is string =>
   typeof value === 'string' && value.trim().length > 0;
@@ -90,7 +90,7 @@ const resolveShortcutName = (name: string): string => {
     throw new TypeError('Shortcut name must be non-empty');
   }
 
-  if (path.basename(resolved) !== resolved || resolved.includes('/') || resolved.includes('\\')) {
+  if (path.win32.basename(resolved) !== resolved || resolved.includes('/') || resolved.includes('\\')) {
     throw new TypeError('Shortcut name must not contain path separators');
   }
 
@@ -99,11 +99,11 @@ const resolveShortcutName = (name: string): string => {
 
 const resolveDesktopPath = async (shell: ShortcutShell): Promise<string> => {
   const desktopPath = (await shell.getKnownDesktopPath()).trim();
-  if (desktopPath.length === 0 || !path.isAbsolute(desktopPath)) {
+  if (desktopPath.length === 0 || !path.win32.isAbsolute(desktopPath)) {
     throw new TypeError('Windows known Desktop path must be absolute');
   }
 
-  return path.resolve(desktopPath);
+  return path.win32.resolve(desktopPath);
 };
 
 export const validateShortcutTarget = async (siteRoot: string): Promise<string> => {
@@ -138,8 +138,8 @@ export const createOrUpdateShortcut = async (
   const shortcutName = resolveShortcutName(request.name);
   const target = await validateShortcutTarget(request.siteRoot);
   const desktopPath = await resolveDesktopPath(shell);
-  const shortcutPath = path.resolve(desktopPath, `${shortcutName}.lnk`);
-  const manifestPath = path.resolve(desktopPath, JOB_HUNTING_MANIFEST);
+  const shortcutPath = path.win32.resolve(desktopPath, `${shortcutName}.lnk`);
+  const manifestPath = path.win32.resolve(desktopPath, JOB_HUNTING_MANIFEST);
   const existingShortcut = await shell.pathExists(shortcutPath);
   const manifest = await shell.readManifest(manifestPath);
 
