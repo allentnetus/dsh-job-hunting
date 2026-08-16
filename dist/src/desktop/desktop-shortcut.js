@@ -13,7 +13,7 @@ const isPathWithin = (root, candidate) => {
         !relative.startsWith(`..${path.sep}`) &&
         !path.isAbsolute(relative));
 };
-const normalizeComparablePath = (value) => path.normalize(value).toLowerCase();
+const normalizeComparablePath = (value) => path.win32.normalize(value).toLowerCase();
 const isNonEmptyString = (value) => typeof value === 'string' && value.trim().length > 0;
 const isValidShortcutManifest = (manifest) => {
     if (typeof manifest !== 'object' || manifest === null) {
@@ -33,17 +33,17 @@ const resolveShortcutName = (name) => {
     if (resolved.length === 0 || resolved === '.' || resolved === '..') {
         throw new TypeError('Shortcut name must be non-empty');
     }
-    if (path.basename(resolved) !== resolved || resolved.includes('/') || resolved.includes('\\')) {
+    if (path.win32.basename(resolved) !== resolved || resolved.includes('/') || resolved.includes('\\')) {
         throw new TypeError('Shortcut name must not contain path separators');
     }
     return resolved;
 };
 const resolveDesktopPath = async (shell) => {
     const desktopPath = (await shell.getKnownDesktopPath()).trim();
-    if (desktopPath.length === 0 || !path.isAbsolute(desktopPath)) {
+    if (desktopPath.length === 0 || !path.win32.isAbsolute(desktopPath)) {
         throw new TypeError('Windows known Desktop path must be absolute');
     }
-    return path.resolve(desktopPath);
+    return path.win32.resolve(desktopPath);
 };
 export const validateShortcutTarget = async (siteRoot) => {
     if (typeof siteRoot !== 'string' || siteRoot.trim().length === 0) {
@@ -69,8 +69,8 @@ export const createOrUpdateShortcut = async (request, shell) => {
     const shortcutName = resolveShortcutName(request.name);
     const target = await validateShortcutTarget(request.siteRoot);
     const desktopPath = await resolveDesktopPath(shell);
-    const shortcutPath = path.resolve(desktopPath, `${shortcutName}.lnk`);
-    const manifestPath = path.resolve(desktopPath, JOB_HUNTING_MANIFEST);
+    const shortcutPath = path.win32.resolve(desktopPath, `${shortcutName}.lnk`);
+    const manifestPath = path.win32.resolve(desktopPath, JOB_HUNTING_MANIFEST);
     const existingShortcut = await shell.pathExists(shortcutPath);
     const manifest = await shell.readManifest(manifestPath);
     // requireApproval controls whether an upstream caller must prompt; an explicit

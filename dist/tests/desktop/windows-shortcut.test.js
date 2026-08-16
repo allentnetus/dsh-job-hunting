@@ -28,7 +28,7 @@ const makeTempDir = async () => {
     return directory;
 };
 const makeShell = (overrides = {}) => ({
-    getKnownDesktopPath: vi.fn(async () => path.join('C:', 'Users', 'test', 'Desktop')),
+    getKnownDesktopPath: vi.fn(async () => path.win32.join('C:', 'Users', 'test', 'Desktop')),
     pathExists: vi.fn(async () => false),
     readManifest: vi.fn(async () => undefined),
     createShortcut: vi.fn(async () => undefined),
@@ -79,26 +79,26 @@ describe('windows shortcut ownership and approval', () => {
         const shell = makeShell();
         await expect(createOrUpdateShortcut(makeRequest(siteRoot), shell)).resolves.toMatchObject({
             status: 'created',
-            shortcutPath: path.join('C:', 'Users', 'test', 'Desktop', 'Job Hunting.lnk'),
+            shortcutPath: path.win32.join('C:', 'Users', 'test', 'Desktop', 'Job Hunting.lnk'),
         });
         expect(shell.createShortcut).toHaveBeenCalledTimes(1);
         expect(shell.updateShortcut).not.toHaveBeenCalled();
-        expect(shell.writeManifestAtomically).toHaveBeenCalledWith(path.join('C:', 'Users', 'test', 'Desktop', '.job-hunting-manifest.json'), expect.objectContaining({
+        expect(shell.writeManifestAtomically).toHaveBeenCalledWith(path.win32.join('C:', 'Users', 'test', 'Desktop', '.job-hunting-manifest.json'), expect.objectContaining({
             shortcutName: 'Job Hunting',
-            shortcutPath: path.join('C:', 'Users', 'test', 'Desktop', 'Job Hunting.lnk'),
+            shortcutPath: path.win32.join('C:', 'Users', 'test', 'Desktop', 'Job Hunting.lnk'),
             target: path.resolve(siteRoot, 'index.html'),
         }));
     });
     it('updates an existing shortcut only when the manifest owns its path and name', async () => {
         const siteRoot = await makeTempDir();
         await writeFile(path.join(siteRoot, 'index.html'), '<!doctype html>');
-        const desktopPath = path.join('C:', 'Users', 'test', 'Desktop');
-        const shortcutPath = path.join(desktopPath, 'Job Hunting.lnk');
+        const desktopPath = path.win32.join('C:', 'Users', 'test', 'Desktop');
+        const shortcutPath = path.win32.join(desktopPath, 'Job Hunting.lnk');
         const manifest = {
             version: 1,
             shortcutName: 'Job Hunting',
             shortcutPath,
-            target: path.join(desktopPath, 'old-site', 'index.html'),
+            target: path.win32.join(desktopPath, 'old-site', 'index.html'),
         };
         const shell = makeShell({
             pathExists: vi.fn(async () => true),
@@ -120,13 +120,13 @@ describe('windows shortcut ownership and approval', () => {
     ])('rejects a manifest when %s', async (_label, changes) => {
         const siteRoot = await makeTempDir();
         await writeFile(path.join(siteRoot, 'index.html'), '<!doctype html>');
-        const desktopPath = path.join('C:', 'Users', 'test', 'Desktop');
-        const shortcutPath = path.join(desktopPath, 'Job Hunting.lnk');
+        const desktopPath = path.win32.join('C:', 'Users', 'test', 'Desktop');
+        const shortcutPath = path.win32.join(desktopPath, 'Job Hunting.lnk');
         const manifest = {
             version: 1,
             shortcutName: 'Job Hunting',
             shortcutPath,
-            target: path.join(desktopPath, 'old-site', 'index.html'),
+            target: path.win32.join(desktopPath, 'old-site', 'index.html'),
             ...changes,
         };
         const shell = makeShell({

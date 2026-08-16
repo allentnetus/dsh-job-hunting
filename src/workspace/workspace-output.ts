@@ -70,12 +70,19 @@ const requireWorkspaceRegistry = (ctx: DshContext): WorkspaceRegistryLike => {
 };
 
 const resolveRelativePath = (root: string, relativePath: string): string => {
-  if (path.isAbsolute(relativePath)) {
+  if (
+    path.isAbsolute(relativePath) ||
+    path.posix.isAbsolute(relativePath) ||
+    path.win32.isAbsolute(relativePath)
+  ) {
     throw new TypeError(`Path must be relative, received absolute path: ${relativePath}`);
   }
 
   const resolvedRoot = path.resolve(root);
-  const resolvedPath = path.resolve(resolvedRoot, relativePath);
+  const hostRelativePath = process.platform === 'win32'
+    ? relativePath
+    : relativePath.replaceAll('\\', '/');
+  const resolvedPath = path.resolve(resolvedRoot, hostRelativePath);
   const relativeToRoot = path.relative(resolvedRoot, resolvedPath);
 
   if (
