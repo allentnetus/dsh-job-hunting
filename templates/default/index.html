@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JH / 求职情报站 / Job Hunting</title>
+    <link rel="stylesheet" href="./app.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand-mark" aria-hidden="true">JH</div>
+      <div>
+        <p class="eyebrow">JH / 求职情报站</p>
+        <h1>Job Hunting</h1>
+      </div>
+      <div class="topbar-meta">
+        <span id="job-count">0 个岗位</span>
+        <button id="export-button" class="button button-accent" type="button">导出兴趣标记</button>
+      </div>
+    </header>
+
+    <main class="shell">
+      <section class="toolbar" aria-label="岗位筛选">
+        <label>
+          搜索
+          <input id="search-input" type="search" autocomplete="off" placeholder="岗位、公司或地点" />
+        </label>
+        <label>
+          标记
+          <select id="mark-filter">
+            <option value="all">全部状态</option>
+            <option value="none">未标记</option>
+            <option value="favorite">favorite</option>
+            <option value="interested">interested</option>
+            <option value="excluded">excluded</option>
+          </select>
+        </label>
+      </section>
+      <p id="status-message" class="status-message" role="status"></p>
+      <section id="job-list" class="job-grid" aria-live="polite"></section>
+    </main>
+
+    __SITE_DATA__
+    <script src="./app.js"></script>
+  </body>
+</html>

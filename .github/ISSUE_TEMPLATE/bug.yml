@@ -1,0 +1,38 @@
+name: 缺陷报告
+description: 报告 Job Hunting 中可复现的问题。
+title: "[缺陷] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        发布前请删除简历、凭证、Cookie、Token 和私人岗位数据。
+  - type: textarea
+    id: description
+    attributes:
+      label: 发生了什么？
+      description: 描述实际行为和预期行为。
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 复现步骤
+      description: 提供最小且安全的复现步骤和命令输出。
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 版本
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: 环境
+      placeholder: Windows 11、Node 24、pnpm 11
+    validations:
+      required: true

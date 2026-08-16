@@ -1,0 +1,8 @@
+{
+  "name": "dsh-job-hunting",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}

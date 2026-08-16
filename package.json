@@ -1,0 +1,99 @@
+{
+  "name": "dsh-job-hunting",
+  "version": "0.1.0",
+  "description": "Job Hunting DSH plugin and runtime skill scaffold for local job intelligence workflows.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/allentnetus/dsh-job-hunting.git"
+  },
+  "homepage": "https://github.com/allentnetus/dsh-job-hunting#readme",
+  "bugs": {
+    "url": "https://github.com/allentnetus/dsh-job-hunting/issues"
+  },
+  "type": "module",
+  "packageManager": "pnpm@11.19.0",
+  "main": "./dist/src/index.js",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/src/index.d.ts",
+      "default": "./dist/src/index.js"
+    },
+    "./skill/job-hunting.skill": {
+      "types": "./dist/src/skill/job-hunting.skill.d.ts",
+      "default": "./dist/src/skill/job-hunting.skill.js"
+    },
+    "./desktop/desktop-shortcut": {
+      "types": "./dist/src/desktop/desktop-shortcut.d.ts",
+      "default": "./dist/src/desktop/desktop-shortcut.js"
+    }
+  },
+  "files": [
+    "dist/src",
+    "templates",
+    "dsh.bundle",
+    "cordis.patch.yml",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md",
+    "SECURITY.md",
+    "CONTRIBUTING.md",
+    "CODE_OF_CONDUCT.md",
+    "THIRD-PARTY-NOTICES.md",
+    "docs/job-hunting-feasibility.md",
+    "docs/dsh-installation.md",
+    "docs/browser-skill-integration.md",
+    "docs/workspace-output.md",
+    "docs/release-checklist.md"
+  ],
+  "scripts": {
+    "clean": "node scripts/clean-dist.mjs",
+    "build": "corepack pnpm clean && tsc -p tsconfig.json",
+    "lint": "tsc --noEmit -p tsconfig.json",
+    "test": "corepack pnpm build && vitest run",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "dsh:smoke": "node scripts/dsh-profile-smoke.mjs",
+    "security:history": "gitleaks git --redact --log-opts=\"--all\" .",
+    "release:check": "corepack pnpm build && vitest run tests/release/release-checks.test.ts && corepack pnpm dsh:smoke && corepack pnpm pack --dry-run"
+  },
+  "keywords": [
+    "deepseek-harness",
+    "dsh",
+    "job-hunting",
+    "plugin",
+    "runtime-skill"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "engines": {
+    "node": ">=24.15.0",
+    "pnpm": ">=11.19.0"
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-llm": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-skill": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-tools": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-workspace": "0.1.0-rc.6"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh": "0.1.0-rc.6",
+    "@types/node": "^26.2.0",
+    "@deepseek-ai/dsh-llm": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-skill": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-tools": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-workspace": "0.1.0-rc.6",
+    "typescript": "^7.0.2",
+    "vitest": "^4.1.10"
+  },
+  "dependencies": {
+    "mammoth": "^1.12.1",
+    "pdfjs-dist": "^6.2.108"
+  }
+}
