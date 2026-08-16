@@ -16,9 +16,11 @@ pnpm licenses list
 
 ## 外部运行前置条件
 
-- BrowserSkill 是由本包直接注册的外部 CLI 集成，不会作为本包的 npm 依赖安装。
-- BrowserSkill CLI 和浏览器扩展由操作者自行安装和管理；本包不会打包、复制或作为依赖加载它们。
-- 使用前必须由操作者独立确认 BrowserSkill CLI 和扩展的许可证。本仓库不对 BrowserSkill
+- [Tencent/BrowserSkill](https://github.com/Tencent/BrowserSkill) 是本包直接注册的外部 CLI 集成，
+  不会作为本包的 npm 依赖安装。
+- Tencent/BrowserSkill CLI 和浏览器扩展由操作者自行安装和管理；本包不会打包、复制或作为依赖
+  加载它们。
+- 使用前必须由操作者独立确认 Tencent/BrowserSkill CLI 和扩展的许可证。本仓库不对该外部项目
   作许可证断言。
 - GitHub Actions 中的 Gitleaks 仅用于仓库安全检查，不是本 npm 包的运行时依赖；其许可证和
   运行条件由对应的 GitHub Action 仓库负责。

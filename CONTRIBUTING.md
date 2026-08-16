@@ -4,9 +4,9 @@
 
 - 遵循 TDD：先写会失败的测试，观察失败结果，再用最小改动让测试通过。
 - 不要加入未经验证的运行时依赖。
-- BrowserSkill 工具由 npm 安装范围之外的外部软件提供，必须保持只读、仅允许精确主机名白名单、
-  受 `maxItemsPerRun` 数量上限和 `minIntervalMs` 时间间隔限制，
-  并且必须经过批准。
+- [Tencent/BrowserSkill](https://github.com/Tencent/BrowserSkill) 工具由 npm 安装范围之外的外部软件
+  提供，必须保持只读、仅允许精确主机名白名单、受 `maxItemsPerRun` 数量上限和 `minIntervalMs`
+  时间间隔限制，并且必须经过批准。
 - 不要加入 OCR、自动投递、凭证提取、认证/CAPTCHA 绕过或固定 Workspace 路径。
 - 保持 JH / 求职情报站 / Job Hunting 品牌，并确保用户数据不进入仓库和发布包。
 

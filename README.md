@@ -32,14 +32,11 @@
 
 ```powershell
 dsh --help
-dsh plugin --profile web add 'github:allentnetus/dsh-job-hunting#v0.1.0'
+dsh plugin --profile web add 'github:allentnetus/dsh-job-hunting#v0.1.1'
 ```
 
-如果需要完全固定到某次提交，也可以使用完整提交号：
-
-```powershell
-dsh plugin --profile web add 'github:allentnetus/dsh-job-hunting#0eafcb4afbb8096e82582bb6349d2e2a9acaa7bc'
-```
+如需固定到不可变提交，请使用 GitHub Release `v0.1.1` 页面显示的完整 commit SHA；日常安装直接使用
+上面的版本标签即可。
 
 `web` 是示例 profile 名称；如果使用者使用的是 `demo` 或其他 profile，将命令中的 `web`
 替换为自己的 profile 名称。
@@ -65,10 +62,11 @@ allowBuilds:
   dsh-job-hunting: true
 ```
 
-## BrowserSkill 集成
+## Tencent/BrowserSkill 集成
 
-插件会直接注册并默认启用 `job_hunting_collect_browser_jobs` 工具。BrowserSkill CLI
-（`bsk`）和浏览器扩展是外部运行前置条件，不是 npm 依赖，也不会随本包安装或发布。
+插件会直接注册并默认启用 `job_hunting_collect_browser_jobs` 工具。它使用
+[Tencent/BrowserSkill](https://github.com/Tencent/BrowserSkill) 项目提供的 BrowserSkill CLI
+（`bsk`）和浏览器扩展；这些是外部运行前置条件，不是 npm 依赖，也不会随本包安装或发布。
 默认已包含 51job、BOSS 直聘、猎聘、智联招聘和国聘的精确主机名；宿主可以覆盖默认列表或追加其他站点：
 
 ```json

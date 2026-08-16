@@ -13,7 +13,7 @@ const asJson = (value) => JSON.parse(JSON.stringify(value));
 const readJobs = async (workspace) => (await readWorkspaceJson(workspace.path, 'data/jobs.json')) ?? [];
 export const createBrowserJobTool = (resolveWorkspace, config, runner = createSafeBskRunner(config.browserSkill.executable)) => defineTool({
     name: 'job_hunting_collect_browser_jobs',
-    description: 'Collect visible job postings through the configured read-only BrowserSkill session and persist them in the active Workspace after explicit confirmation.',
+    description: 'Collect visible job postings through the configured read-only Tencent/BrowserSkill session and persist them in the active Workspace after explicit confirmation.',
     parameters: {
         urls: {
             type: 'array',

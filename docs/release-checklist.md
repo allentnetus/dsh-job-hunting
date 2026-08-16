@@ -12,7 +12,7 @@
 - [ ] `pnpm release:check`（发布测试、DSH 冒烟和 `pnpm pack --dry-run`）
 - [ ] `git diff --check`
 - [ ] `dsh plugin --profile web add github:OWNER/REPOSITORY` 已在干净 profile 中验证。
-- [ ] 已创建 `v0.1.0` tag，并在 GitHub 仓库添加 `dsh-plugin` topic。
+- [ ] 已创建本次发布对应的版本 tag（当前为 `v0.1.1`），并在 GitHub 仓库添加 `dsh-plugin` topic。
 - [ ] 已复核 `pnpm licenses list`，且 `THIRD-PARTY-NOTICES.md` 分开记录 MIT、BSD-3-Clause、
       Apache-2.0 和其他所有实际报告的许可证。
 - [ ] 使用 Gitleaks 或项目批准的等价扫描器扫描完整 Git 历史：
@@ -32,7 +32,8 @@
       PDF 明确拒绝且不使用 OCR。
 - [ ] 隐私文档说明不自动投递、不提取凭证、不绕过认证/CAPTCHA，也不上传被拒绝的简历。
 - [ ] `docs/dsh-installation.md` 已说明 DSH `web` profile、`dsh plugin` 安装命令、验证命令、
-      profile `cordis.patch.yml` 配置和外部 `bsk` 前置条件。
+      profile `cordis.patch.yml` 配置和 [Tencent/BrowserSkill](https://github.com/Tencent/BrowserSkill)
+      提供的外部 `bsk` 前置条件。
 
 ## Windows 人工冒烟检查
 

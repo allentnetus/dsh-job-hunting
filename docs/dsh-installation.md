@@ -68,9 +68,10 @@ dsh --profile web --dump-config | Select-String 'job-hunting|dsh-job-hunting'
 验证成功后重启当前 `dsh web`/桌面 Harness。插件注册的 Runtime Skill 名称是
 `job-hunting`，工具名称以 `job_hunting_` 开头。
 
-## 配置 BrowserSkill
+## 配置 Tencent/BrowserSkill
 
-BrowserSkill CLI（`bsk`）和浏览器扩展是外部前置条件，不会由本插件安装。
+[Tencent/BrowserSkill](https://github.com/Tencent/BrowserSkill) 项目提供的 BrowserSkill CLI（`bsk`）
+和浏览器扩展是外部前置条件，不会由本插件安装。
 插件默认启用只读浏览器工具，并默认允许以下精确主机名：
 
 ```text
@@ -138,4 +139,3 @@ dsh --profile web --dump-config
 
 若浏览器采集不可用，单独运行 `bsk status` 检查外部 BrowserSkill；这不影响本插件的本地
 岗位导入、简历解析、匹配、报告和网站构建功能。
-

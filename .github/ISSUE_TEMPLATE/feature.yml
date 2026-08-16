@@ -26,6 +26,6 @@ body:
     id: boundaries
     attributes:
       label: 隐私与安全影响
-      description: 说明对 Workspace 数据、BrowserSkill、凭证、自动化或快捷方式的影响。
+      description: 说明对 Workspace 数据、[Tencent/BrowserSkill](https://github.com/Tencent/BrowserSkill)、凭证、自动化或快捷方式的影响。
     validations:
       required: true

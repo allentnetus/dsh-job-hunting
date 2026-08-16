@@ -1,7 +1,9 @@
-# BrowserSkill 集成
+# Tencent/BrowserSkill 集成
 
-插件直接注册 `job_hunting_collect_browser_jobs` 工具。BrowserSkill 外部 CLI（`bsk`）和浏览器
-扩展是运行前置条件；它们不是 npm 依赖，不会由本包安装，也不会被打包或复制到发布内容中。
+插件直接注册 `job_hunting_collect_browser_jobs` 工具。它使用
+[Tencent/BrowserSkill](https://github.com/Tencent/BrowserSkill) 项目提供的 BrowserSkill 外部 CLI
+（`bsk`）和浏览器扩展作为运行前置条件；它们不是 npm 依赖，不会由本包安装，也不会被打包或复制
+到发布内容中。
 
 ## 宿主配置
 

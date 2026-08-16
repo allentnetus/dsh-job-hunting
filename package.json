@@ -1,6 +1,6 @@
 {
   "name": "dsh-job-hunting",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Job Hunting DSH plugin and runtime skill scaffold for local job intelligence workflows.",
   "license": "MIT",
   "repository": {
