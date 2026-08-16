@@ -24,14 +24,46 @@
 本插件针对 DeepSeek Harness `0.1.0-rc.6` 的 `web` profile 验证。完整的 npm、GitHub、
 本地源码安装、验证、卸载和 DSH profile 配置方式见[安装指南](./docs/dsh-installation.md)。
 
-从 GitHub 安装：
+以下说明面向其他使用者。使用者不需要克隆本仓库、不需要手动复制 `cordis.patch.yml`，
+也不需要使用维护者电脑上的本地路径；只要先安装 DeepSeek Harness，并确保自己的终端能调用
+`dsh` 命令即可。
+
+### 从 GitHub 安装
 
 ```powershell
-dsh plugin --profile web add github:allentnetus/dsh-job-hunting
+dsh --help
+dsh plugin --profile web add 'github:allentnetus/dsh-job-hunting#v0.1.0'
 ```
 
-安装后重启 `dsh web` 或桌面 Harness；插件会自动注册 `job-hunting` Runtime Skill 和
-`job_hunting_` 工具，不需要手动复制 `cordis.patch.yml`。
+如果需要完全固定到某次提交，也可以使用完整提交号：
+
+```powershell
+dsh plugin --profile web add 'github:allentnetus/dsh-job-hunting#0eafcb4afbb8096e82582bb6349d2e2a9acaa7bc'
+```
+
+`web` 是示例 profile 名称；如果使用者使用的是 `demo` 或其他 profile，将命令中的 `web`
+替换为自己的 profile 名称。
+
+安装后验证：
+
+```powershell
+dsh plugin --profile web list
+dsh --profile web --dump-config | Select-String 'dsh-job-hunting|job-hunting'
+```
+
+验证成功后重启 `dsh web` 或桌面 Harness。插件会自动注册 `job-hunting` Runtime Skill 和
+`job_hunting_` 工具。GitHub 的 `dsh-plugin` 主题仅用于分类和发现，不会自动安装插件。
+
+如果终端提示“`dsh` 不是内部或外部命令”，这是使用者自己的 DSH CLI 未安装或未加入 PATH，
+不是本插件安装失败；应先修复自己的 DeepSeek Harness CLI 安装，不要使用维护者的本机路径。
+
+如果 pnpm 提示 Git 依赖的构建脚本需要审批，请在使用者自己的 DSH profile 的
+`pnpm-workspace.yaml` 中允许本包后重新执行安装：
+
+```yaml
+allowBuilds:
+  dsh-job-hunting: true
+```
 
 ## BrowserSkill 集成
 
