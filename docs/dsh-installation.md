@@ -37,7 +37,7 @@ dsh plugin --profile web add dsh-job-hunting
 ### 从 GitHub 安装
 
 ```powershell
-dsh plugin --profile web add github:allentnetus/dsh-job-hunting
+dsh plugin --profile web add github:allentnetus/dsh-job-hunting#v0.1.2
 ```
 
 GitHub 仓库根目录必须包含 `package.json`、`dsh.bundle` 字段和

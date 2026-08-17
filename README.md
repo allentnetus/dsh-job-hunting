@@ -56,10 +56,10 @@ npm install --global pnpm@11.19.0
 
 ```powershell
 dsh --help
-dsh plugin --profile web add 'github:allentnetus/dsh-job-hunting#v0.1.1'
+dsh plugin --profile web add 'github:allentnetus/dsh-job-hunting#v0.1.2'
 ```
 
-如需固定到不可变提交，请使用 GitHub Release `v0.1.1` 页面显示的完整 commit SHA；日常安装直接使用
+如需固定到不可变提交，请使用 GitHub Release `v0.1.2` 页面显示的完整 commit SHA；日常安装直接使用
 上面的版本标签即可。
 
 `web` 是示例 profile 名称；如果使用者使用的是 `demo` 或其他 profile，将命令中的 `web`
