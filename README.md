@@ -71,8 +71,11 @@ pnpm.cmd --version
 
 ```powershell
 dsh.cmd --help
-dsh.cmd plugin --profile web add 'github:allentnetus/dsh-job-hunting#v0.1.2'
+dsh.cmd plugin --profile web add 'git+https://github.com/allentnetus/dsh-job-hunting.git#v0.1.2'
 ```
+
+这里使用 HTTPS Git URL，不依赖本机 GitHub SSH host key；不要改成 `github:` 简写，否则 pnpm
+可能将地址转换为 SSH，并在未配置 SSH host key 的 Windows 环境中失败。
 
 如需固定到不可变提交，请使用 GitHub Release `v0.1.2` 页面显示的完整 commit SHA；日常安装直接使用
 上面的版本标签即可。
