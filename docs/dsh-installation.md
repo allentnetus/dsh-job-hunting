@@ -11,8 +11,7 @@
 - 已初始化或可初始化 `web` profile。
 
 本插件的 `@deepseek-ai/dsh`、Cordis、工具、Skill 和 Workspace 包通过 peer
-依赖声明为宿主提供的运行时，不会重新打包整个 DeepSeek Harness。远程用户不需要单独准备
-维护者的源码目录、开发依赖或 `node_modules`。
+依赖声明为宿主提供的运行时，不会重新打包整个 DeepSeek Harness。
 
 官方用 `npx.cmd @deepseek-ai/dsh@0.1.0-rc.6 web` 启动 DSH 时只要求 Node.js；安装本插件前还要让终端能找到
 `pnpm`。Windows PowerShell 下直接使用 `.cmd` 入口，无需修改执行策略：
@@ -65,19 +64,27 @@ GitHub 仓库根目录必须包含 `package.json`、`dsh.bundle` 字段和
 `cordis.patch.yml`。DSH 会在安装后把声明了 `dsh.bundle` 的依赖加入
 `dsh.profile.bundles`，不需要手动复制补丁。
 
-本交付目录已经包含构建后的 `dist/`，远程用户不需要执行 `pnpm install` 或先自行构建源码。
+### 从本地源码安装
 
-### 从已下载的交付目录安装
-
-如果用户下载 ZIP 并解压到本地，可从解压目录安装：
+在插件仓库中先构建：
 
 ```powershell
-Set-Location 'D:\Downloads\dsh-job-hunting'
-dsh.cmd plugin --profile web add .
+Set-Location 'G:\发布\Job Hunting Skill'
+pnpm.cmd install
+pnpm.cmd build
 ```
 
-如果没有全局 `dsh.cmd` 命令，可将命令开头替换为 `npx.cmd @deepseek-ai/dsh@0.1.0-rc.6`。本地目录安装后不要移动
-或删除该解压目录；长期使用建议直接使用上面的 GitHub 安装方式。
+再从任意目录执行：
+
+```powershell
+dsh.cmd plugin --profile web add 'G:\发布\Job Hunting Skill'
+```
+
+如果当前 Windows 环境没有把 `dsh.cmd` 加入 PATH，可以使用 `npx.cmd` 调用同一入口：
+
+```powershell
+npx.cmd @deepseek-ai/dsh@0.1.0-rc.6 plugin --profile web add 'G:\发布\Job Hunting Skill'
+```
 
 ## 验证与重启
 
