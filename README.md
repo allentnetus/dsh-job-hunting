@@ -21,12 +21,36 @@
 
 ## 在 DeepSeek Harness 中安装
 
-本插件针对 DeepSeek Harness `0.1.0-rc.6` 的 `web` profile 验证。完整的 npm、GitHub、
-本地源码安装、验证、卸载和 DSH profile 配置方式见[安装指南](./docs/dsh-installation.md)。
+本插件针对 DeepSeek Harness `0.1.0-rc.6` 的 `web` profile 验证。完整的 npm、GitHub 安装、
+验证、卸载和 DSH profile 配置方式见[安装指南](./docs/dsh-installation.md)。
+
+### 安装前提
+
+安装 DSH 本体和安装插件是两件事。[官方 npm 启动方式](https://github.com/deepseek-ai/deepseek-harness#run)
+使用 Node.js 和 `npx`，不会自动安装 pnpm；当前 DSH 的 `dsh plugin` 命令会调用 pnpm 管理
+profile 依赖。使用者需要准备：
+
+- DeepSeek Harness `0.1.0-rc.6`，或经过兼容性验证的更高版本；
+- Node.js `>=24.15.0`；
+- pnpm `>=11.19.0`；
+- 已初始化或可初始化目标 profile（以下以 `web` 为例）。
+
+先确认终端可以找到这些命令：
+
+```powershell
+node --version
+pnpm --version
+dsh --help
+```
+
+如果 `pnpm` 不存在，单独安装它即可；不需要在本插件目录执行 `pnpm install`：
+
+```powershell
+npm install --global pnpm@11.19.0
+```
 
 以下说明面向其他使用者。使用者不需要克隆本仓库、不需要手动复制 `cordis.patch.yml`，
-也不需要使用维护者电脑上的本地路径；只要先安装 DeepSeek Harness，并确保自己的终端能调用
-`dsh` 命令即可。
+也不需要使用维护者电脑上的本地路径。
 
 ### 从 GitHub 安装
 
@@ -52,15 +76,12 @@ dsh --profile web --dump-config | Select-String 'dsh-job-hunting|job-hunting'
 `job_hunting_` 工具。GitHub 的 `dsh-plugin` 主题仅用于分类和发现，不会自动安装插件。
 
 如果终端提示“`dsh` 不是内部或外部命令”，这是使用者自己的 DSH CLI 未安装或未加入 PATH，
-不是本插件安装失败；应先修复自己的 DeepSeek Harness CLI 安装，不要使用维护者的本机路径。
+不是本插件安装失败；可以先用 `npx @deepseek-ai/dsh` 启动或执行插件命令，或者将自己的
+DeepSeek Harness CLI 加入 PATH，不要使用维护者的本机路径。
 
-如果 pnpm 提示 Git 依赖的构建脚本需要审批，请在使用者自己的 DSH profile 的
-`pnpm-workspace.yaml` 中允许本包后重新执行安装：
-
-```yaml
-allowBuilds:
-  dsh-job-hunting: true
-```
+远程使用者不需要克隆本仓库、在本插件目录执行 `pnpm install`，也不需要复制维护者电脑中的
+`node_modules`。本交付目录已经包含构建后的运行入口；DeepSeek Harness 会在自己的 profile 中
+安装本插件声明的运行依赖。
 
 ## Tencent/BrowserSkill 集成
 
@@ -104,21 +125,9 @@ allowBuilds:
 `schedule.enabled` 默认是 `false`。当前支持的模式是 `session-reminder`：它只会在活跃的
 DSH 会话中提醒用户，不承诺可靠的后台 Cron，也不会作为无人值守爬虫运行。
 
-## 入口与命令
+## 运行入口
 
 - DSH 插件入口点为 `./dist/src/index.js`。
 - Runtime Skill 入口点为 `./dist/src/skill/job-hunting.skill.js`。
 
-```powershell
-pnpm install
-pnpm test              # 运行 Vitest 前会先清理并构建
-pnpm typecheck
-pnpm build
-pnpm lint
-pnpm dsh:smoke
-pnpm release:check
-```
-
-`pnpm test` 和 `pnpm release:check` 都会先清理并构建 `dist`，再运行 Vitest 检查；
-`pnpm build` 也会先移除旧的 `dist`。这些命令不会发布包，也不会全局安装任何内容。
-完整 Git 历史密钥扫描仍是外部发布前置条件，不由当前本地检查执行。详见[发布清单](./docs/release-checklist.md)。
+开发、测试和构建流程不属于远程用户的安装步骤，保留在维护者的独立开发工作区中。

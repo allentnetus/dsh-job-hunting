@@ -44,19 +44,8 @@
     "docs/job-hunting-feasibility.md",
     "docs/dsh-installation.md",
     "docs/browser-skill-integration.md",
-    "docs/workspace-output.md",
-    "docs/release-checklist.md"
+    "docs/workspace-output.md"
   ],
-  "scripts": {
-    "clean": "node scripts/clean-dist.mjs",
-    "build": "corepack pnpm clean && tsc -p tsconfig.json",
-    "lint": "tsc --noEmit -p tsconfig.json",
-    "test": "corepack pnpm build && vitest run",
-    "typecheck": "tsc --noEmit -p tsconfig.json",
-    "dsh:smoke": "node scripts/dsh-profile-smoke.mjs",
-    "security:history": "gitleaks git --redact --log-opts=\"--all\" .",
-    "release:check": "corepack pnpm build && vitest run tests/release/release-checks.test.ts && corepack pnpm dsh:smoke && corepack pnpm pack --dry-run"
-  },
   "keywords": [
     "deepseek-harness",
     "dsh",
@@ -80,17 +69,6 @@
     "@deepseek-ai/dsh-skill": "0.1.0-rc.6",
     "@deepseek-ai/dsh-tools": "0.1.0-rc.6",
     "@deepseek-ai/dsh-workspace": "0.1.0-rc.6"
-  },
-  "devDependencies": {
-    "@deepseek-ai/cordis": "^4.0.1",
-    "@deepseek-ai/dsh": "0.1.0-rc.6",
-    "@types/node": "^26.2.0",
-    "@deepseek-ai/dsh-llm": "0.1.0-rc.6",
-    "@deepseek-ai/dsh-skill": "0.1.0-rc.6",
-    "@deepseek-ai/dsh-tools": "0.1.0-rc.6",
-    "@deepseek-ai/dsh-workspace": "0.1.0-rc.6",
-    "typescript": "^7.0.2",
-    "vitest": "^4.1.10"
   },
   "dependencies": {
     "mammoth": "^1.12.1",
