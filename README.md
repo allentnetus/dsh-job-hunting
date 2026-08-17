@@ -40,7 +40,7 @@ profile 依赖。使用者需要准备：
 ```powershell
 node --version
 pnpm.cmd --version
-dsh --help
+dsh.cmd --help
 ```
 
 如果 `pnpm` 不存在，单独安装它即可；不需要在本插件目录执行 `pnpm install`：
@@ -70,8 +70,8 @@ pnpm.cmd --version
 ### 从 GitHub 安装
 
 ```powershell
-dsh --help
-dsh plugin --profile web add 'github:allentnetus/dsh-job-hunting#v0.1.2'
+dsh.cmd --help
+dsh.cmd plugin --profile web add 'github:allentnetus/dsh-job-hunting#v0.1.2'
 ```
 
 如需固定到不可变提交，请使用 GitHub Release `v0.1.2` 页面显示的完整 commit SHA；日常安装直接使用
@@ -83,16 +83,32 @@ dsh plugin --profile web add 'github:allentnetus/dsh-job-hunting#v0.1.2'
 安装后验证：
 
 ```powershell
-dsh plugin --profile web list
-dsh --profile web --dump-config | Select-String 'dsh-job-hunting|job-hunting'
+dsh.cmd plugin --profile web list
+dsh.cmd --profile web --dump-config | Select-String 'dsh-job-hunting|job-hunting'
 ```
 
-验证成功后重启 `dsh web` 或桌面 Harness。插件会自动注册 `job-hunting` Runtime Skill 和
+验证成功后重启 `dsh.cmd web` 或桌面 Harness。插件会自动注册 `job-hunting` Runtime Skill 和
 `job_hunting_` 工具。GitHub 的 `dsh-plugin` 主题仅用于分类和发现，不会自动安装插件。
 
-如果终端提示“`dsh` 不是内部或外部命令”，这是使用者自己的 DSH CLI 未安装或未加入 PATH，
-不是本插件安装失败；可以先用 `npx @deepseek-ai/dsh` 启动或执行插件命令，或者将自己的
-DeepSeek Harness CLI 加入 PATH，不要使用维护者的本机路径。
+如果终端提示“`dsh` 不是内部或外部命令”，说明使用者自己的 DSH CLI 尚未安装或未加入 PATH，
+不是本插件安装失败。Windows PowerShell 下可以选择以下方式，均不需要修改执行策略：
+
+长期使用（推荐）时，全局安装已验证版本：
+
+```powershell
+npm.cmd install --global @deepseek-ai/dsh@0.1.0-rc.6
+dsh.cmd --help
+```
+
+只需临时运行时，使用 npx：
+
+```powershell
+npx.cmd @deepseek-ai/dsh@0.1.0-rc.6 --help
+```
+
+首次运行 npx 可能会询问是否安装该包，输入 `y` 并按 Enter 即可。之后通常会复用 npm 缓存，
+但仍需通过 `npx.cmd` 调用，不会创建永久的 `dsh` 命令。全局安装后如果仍找不到 `dsh.cmd`，
+请重新打开 PowerShell；若仍未找到，可运行 `npm.cmd prefix -g`，确认输出目录已加入 PATH。
 
 远程使用者不需要克隆本仓库、在本插件目录执行 `pnpm install`，也不需要复制维护者电脑中的
 `node_modules`。本交付目录已经包含构建后的运行入口；DeepSeek Harness 会在自己的 profile 中

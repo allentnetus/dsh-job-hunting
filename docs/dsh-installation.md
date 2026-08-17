@@ -14,14 +14,32 @@
 依赖声明为宿主提供的运行时，不会重新打包整个 DeepSeek Harness。远程用户不需要单独准备
 维护者的源码目录、开发依赖或 `node_modules`。
 
-官方用 `npx @deepseek-ai/dsh web` 启动 DSH 时只要求 Node.js；安装本插件前还要让终端能找到
-`pnpm`。如果 `pnpm --version` 失败，请单独安装：
+官方用 `npx.cmd @deepseek-ai/dsh@0.1.0-rc.6 web` 启动 DSH 时只要求 Node.js；安装本插件前还要让终端能找到
+`pnpm`。Windows PowerShell 下直接使用 `.cmd` 入口，无需修改执行策略：
 
 ```powershell
-npm install --global pnpm@11.19.0
+npm.cmd install --global pnpm@11.19.0
+pnpm.cmd --version
 ```
 
-这里需要的是 pnpm 命令，不是让远程用户在本插件目录执行 `pnpm install`；`dsh plugin` 会在
+如果终端提示找不到 `dsh`，长期使用时全局安装已验证版本：
+
+```powershell
+npm.cmd install --global @deepseek-ai/dsh@0.1.0-rc.6
+dsh.cmd --help
+```
+
+只需临时运行时，可以使用 npx：
+
+```powershell
+npx.cmd @deepseek-ai/dsh@0.1.0-rc.6 --help
+```
+
+首次运行 npx 可能会询问是否安装该包，输入 `y` 并按 Enter 即可。之后通常会复用 npm 缓存，
+但仍需通过 `npx.cmd` 调用，不会创建永久的 `dsh` 命令。全局安装后如果仍找不到 `dsh.cmd`，
+请重新打开 PowerShell；若仍未找到，可运行 `npm.cmd prefix -g`，确认输出目录已加入 PATH。
+
+这里需要的是 pnpm 命令，不是让远程用户在本插件目录执行 `pnpm install`；`dsh.cmd plugin` 会在
 使用者自己的 profile 目录中安装插件及其运行依赖。
 
 ## 安装
@@ -31,13 +49,13 @@ npm install --global pnpm@11.19.0
 当 `dsh-job-hunting` 已发布到 npm 时：
 
 ```powershell
-dsh plugin --profile web add dsh-job-hunting
+dsh.cmd plugin --profile web add dsh-job-hunting
 ```
 
 ### 从 GitHub 安装
 
 ```powershell
-dsh plugin --profile web add github:allentnetus/dsh-job-hunting#v0.1.2
+dsh.cmd plugin --profile web add github:allentnetus/dsh-job-hunting#v0.1.2
 ```
 
 GitHub 仓库根目录必须包含 `package.json`、`dsh.bundle` 字段和
@@ -52,10 +70,10 @@ GitHub 仓库根目录必须包含 `package.json`、`dsh.bundle` 字段和
 
 ```powershell
 Set-Location 'D:\Downloads\dsh-job-hunting'
-dsh plugin --profile web add .
+dsh.cmd plugin --profile web add .
 ```
 
-如果没有全局 `dsh` 命令，可将命令开头替换为 `npx @deepseek-ai/dsh`。本地目录安装后不要移动
+如果没有全局 `dsh.cmd` 命令，可将命令开头替换为 `npx.cmd @deepseek-ai/dsh@0.1.0-rc.6`。本地目录安装后不要移动
 或删除该解压目录；长期使用建议直接使用上面的 GitHub 安装方式。
 
 ## 验证与重启
@@ -63,11 +81,11 @@ dsh plugin --profile web add .
 查看 profile 依赖和 bundle：
 
 ```powershell
-dsh plugin --profile web list
-dsh --profile web --dump-config | Select-String 'job-hunting|dsh-job-hunting'
+dsh.cmd plugin --profile web list
+dsh.cmd --profile web --dump-config | Select-String 'job-hunting|dsh-job-hunting'
 ```
 
-验证成功后重启当前 `dsh web`/桌面 Harness。插件注册的 Runtime Skill 名称是
+验证成功后重启当前 `dsh.cmd web`/桌面 Harness。插件注册的 Runtime Skill 名称是
 `job-hunting`，工具名称以 `job_hunting_` 开头。
 
 ## 配置 Tencent/BrowserSkill
@@ -121,9 +139,9 @@ www.iguopin.com
 ## 更新、卸载与问题排查
 
 ```powershell
-dsh plugin --profile web update dsh-job-hunting
-dsh plugin --profile web remove dsh-job-hunting
-dsh --profile web --dump-config
+dsh.cmd plugin --profile web update dsh-job-hunting
+dsh.cmd plugin --profile web remove dsh-job-hunting
+dsh.cmd --profile web --dump-config
 ```
 
 如果插件没有出现在配置树中，先确认依赖安装在 `web` profile，并检查包的
