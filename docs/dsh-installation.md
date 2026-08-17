@@ -55,11 +55,11 @@ dsh.cmd plugin --profile web add dsh-job-hunting
 ### 从 GitHub 安装
 
 ```powershell
-dsh.cmd plugin --profile web add git+https://github.com/allentnetus/dsh-job-hunting.git#v0.1.2
+dsh.cmd plugin --profile web add "https://codeload.github.com/allentnetus/dsh-job-hunting/tar.gz/refs/tags/v0.1.2"
 ```
 
-这里使用 HTTPS Git URL，不依赖本机 GitHub SSH host key；不要改成 `github:` 简写，否则 pnpm
-可能将地址转换为 SSH，并在未配置 SSH host key 的 Windows 环境中失败。
+这里使用 GitHub tag tarball URL，不调用 Git `ls-remote`，不依赖本机 GitHub SSH host key，
+也不受 Git for Windows Schannel 握手问题影响。不要改成 `github:` 简写。
 
 GitHub 仓库根目录必须包含 `package.json`、`dsh.bundle` 字段和
 `cordis.patch.yml`。DSH 会在安装后把声明了 `dsh.bundle` 的依赖加入
