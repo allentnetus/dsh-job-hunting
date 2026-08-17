@@ -39,15 +39,30 @@ profile 依赖。使用者需要准备：
 
 ```powershell
 node --version
-pnpm --version
+pnpm.cmd --version
 dsh --help
 ```
 
 如果 `pnpm` 不存在，单独安装它即可；不需要在本插件目录执行 `pnpm install`：
 
 ```powershell
-npm install --global pnpm@11.19.0
+npm.cmd install --global pnpm@11.19.0
 ```
+
+#### Windows PowerShell 执行策略问题
+
+如果 Windows PowerShell 提示“无法加载文件 `npm.ps1`，因为在此系统上禁止运行脚本”，这是
+PowerShell 的执行策略阻止了 npm 的 PowerShell 入口，不是 pnpm 安装包本身的问题。可以改用
+`.cmd` 入口安装和验证，无需修改执行策略：
+
+```powershell
+npm.cmd install --global pnpm@11.19.0
+pnpm.cmd --version
+```
+
+验证命令输出 `11.19.0` 即表示安装成功。之后在同一 PowerShell 环境中运行 pnpm 命令时，
+继续使用 `pnpm.cmd` 即可，无需修改执行策略。安装过程中若出现 `electron_mirror` 的未知配置
+警告，通常不影响 pnpm 安装。
 
 以下说明面向其他使用者。使用者不需要克隆本仓库、不需要手动复制 `cordis.patch.yml`，
 也不需要使用维护者电脑上的本地路径。
