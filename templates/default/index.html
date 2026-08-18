@@ -1,46 +1,55 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>JH / 求职情报站 / Job Hunting</title>
-    <link rel="stylesheet" href="./app.css" />
-  </head>
-  <body>
-    <header class="topbar">
-      <div class="brand-mark" aria-hidden="true">JH</div>
-      <div>
-        <p class="eyebrow">Job Hunting</p>
-        <h1>求职情报站</h1>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Job Hunting / 求职情报站</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<div class="app" id="reference-job-site">
+  <header class="masthead">
+    <div class="mast-left">
+      <div class="brand">
+        <span class="brand-mark">JH</span>
+        <div class="brand-name">
+          <span class="bn">求职情报站</span>
+          <span class="bs">Job Hunting</span>
+        </div>
       </div>
-      <div class="topbar-meta">
-        <span id="job-count">0 个岗位</span>
-        <button id="export-button" class="button button-accent" type="button">导出兴趣标记</button>
+      <nav class="viewtab" id="viewtab">
+        <button class="vt on-all" data-view="all">全部</button>
+        <button class="vt" data-view="fav">⭐ 感兴趣 <b class="favcnt" id="favcnt">0</b></button>
+      </nav>
+    </div>
+    <div class="mast-meta">
+      <span class="mm"><span class="dot"></span>5 站 · 权威源 · 企业官网</span>
+      <span class="mm">上次更新 <span id="lastupdate">--</span></span>
+    </div>
+  </header>
+  <nav class="citynav" id="citytab">
+    <button class="ct on" data-city="">全部城市</button>
+    <button class="ct" data-city="北京">北京</button>
+    <button class="ct" data-city="天津">天津</button>
+  </nav>
+  <div class="alertline" id="alertbox"></div>
+  <div class="body">
+    <aside class="side" id="sidedays"></aside>
+    <main class="main">
+      <div class="toolbar">
+        <div class="chips" id="industrysel"></div>
+        <div class="industry-hint" id="industryhint"></div>
+        <div class="toolbar-row">
+          <input class="search" id="searchbox" placeholder="搜索岗位 / 公司 / 来源关键词…">
+          <span class="rescount" id="rescount"></span>
+        </div>
       </div>
-    </header>
-
-    <main class="shell">
-      <section class="toolbar" aria-label="岗位筛选">
-        <label>
-          搜索
-          <input id="search-input" type="search" autocomplete="off" placeholder="岗位、公司或地点" />
-        </label>
-        <label>
-          标记
-          <select id="mark-filter">
-            <option value="all">全部状态</option>
-            <option value="none">未标记</option>
-            <option value="favorite">favorite</option>
-            <option value="interested">interested</option>
-            <option value="excluded">excluded</option>
-          </select>
-        </label>
-      </section>
-      <p id="status-message" class="status-message" role="status"></p>
-      <section id="job-list" class="job-grid" aria-live="polite"></section>
+      <div id="content"></div>
     </main>
-
-    __SITE_DATA__
-    <script src="./app.js"></script>
-  </body>
+  </div>
+  <footer class="foot">求职情报站 · 本地静态数据 · 收藏记录保存在当前浏览器</footer>
+</div>
+__SITE_DATA__
+  <script src="app.js"></script>
+</body>
 </html>

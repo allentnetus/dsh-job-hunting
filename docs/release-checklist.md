@@ -1,6 +1,8 @@
 # v0.1 发布清单
 
-请在仓库根目录运行本清单。它只执行本地检查，不会发布包，也不会全局安装任何内容。
+请在配套的源码工作区根目录运行本清单。它只执行本地检查，不会发布包，也不会全局安装任何内容。
+本 GitHub 目录是预构建交付目录，不包含源码、测试、构建脚本或锁文件；同步完成后，
+应另外检查发布目录的包清单和可安装入口。
 
 ## 自动检查
 
@@ -10,8 +12,16 @@
 - [ ] `pnpm lint`
 - [ ] `pnpm dsh:smoke`（隔离 `web` profile 安装 tarball、加载 bundle 并启动 DSH）
 - [ ] `pnpm release:check`（发布测试、DSH 冒烟和 `pnpm pack --dry-run`）
+- [ ] `pnpm pack --dry-run` 已包含源码工作区构建后的 `dist`、网站模板和 `cordis.patch.yml`。
+- [ ] 在临时 profile 中从上一版本升级到本版本，确认 `dsh.profile.bundles` 保持包含
+      `dsh-job-hunting`，并验证 `dsh --profile <name> --dump-config`。
+- [ ] 使用旧版 `profile/profile.json` 执行一次升级读取，确认生成
+      `profile/profile.json.pre-schema-<version>.bak`，且城市、行业、分类共享规则、收藏和备注不变。
 - [ ] `git diff --check`
-- [ ] `dsh plugin --profile web add github:OWNER/REPOSITORY` 已在干净 profile 中验证。
+- [ ] 在干净 profile 中验证公开 GitHub tag tarball 安装命令（例如
+      `dsh plugin --profile web add "https://codeload.github.com/allentnetus/dsh-job-hunting/tar.gz/refs/tags/v0.1.2"`）；不要使用 `github:` 简写。
+- [ ] 在本 GitHub 发布目录运行 `npm pack --dry-run --ignore-scripts`，确认只包含预构建入口、模板、bundle、补丁和用户文档。
+- [ ] 确认本 GitHub 发布目录不包含 `src/`、`tests/`、`scripts/`、`node_modules/`、锁文件或内部计划。
 - [ ] 已创建本次发布对应的版本 tag（当前为 `v0.1.2`），并在 GitHub 仓库添加 `dsh-plugin` topic。
 - [ ] 已复核 `pnpm licenses list`，且 `THIRD-PARTY-NOTICES.md` 分开记录 MIT、BSD-3-Clause、
       Apache-2.0 和其他所有实际报告的许可证。
@@ -23,6 +33,9 @@
 ## 内容与隐私检查
 
 - [ ] `package.json` 使用 MIT，并指向 `dist/src/index.js` 和 Runtime Skill 入口点。
+- [ ] GitHub 发布目录的 `package.json` 不含源码工作区专用的 `scripts` 或 `devDependencies`，并能通过
+      `npm pack --dry-run --ignore-scripts` 校验预构建内容。
+- [ ] 代码/模板/插件契约的版本号与 `CHANGELOG.md` 一致；岗位采集数据更新不递增插件版本。
 - [ ] `package.json` 的 `repository`、`homepage` 和 `bugs` URL 指向实际 GitHub 仓库，不能保留
       示例 owner/repository。
 - [ ] 发布包包含网站模板和必要文档，但不包含测试、用户 Workspace 数据、简历样本、浏览器
