@@ -93,6 +93,22 @@ dsh.cmd --profile web --dump-config | Select-String 'dsh-job-hunting|job-hunting
 验证成功后重启 `dsh.cmd web` 或桌面 Harness。插件会自动注册 `job-hunting` Runtime Skill 和
 `job_hunting_` 工具。GitHub 的 `dsh-plugin` 主题仅用于分类和发现，不会自动安装插件。
 
+### 后续版本更新
+
+插件代码使用版本号发布；岗位采集数据、用户求职画像、城市/行业分类、收藏和备注保存在
+Workspace 中，独立于插件版本。更新时先检查，再明确执行：
+
+```powershell
+dsh.cmd plugin --profile web outdated
+dsh.cmd plugin --profile web update dsh-job-hunting
+dsh.cmd --profile web --dump-config | Select-String 'dsh-job-hunting|job-hunting'
+```
+
+更新后重启 Harness。默认不执行静默自动升级；如果更新需要回滚，恢复 profile 的
+`package.json` 与 `pnpm-lock.yaml` 后执行 `dsh.cmd plugin --profile web install --frozen-lockfile`。
+旧版 profile 第一次被新插件读取时会自动补充 schema 标记，并保留
+`profile/profile.json.pre-schema-<version>.bak`，不会覆盖用户已确认的分类决策。
+
 如果终端提示“`dsh` 不是内部或外部命令”，说明使用者自己的 DSH CLI 尚未安装或未加入 PATH，
 不是本插件安装失败。Windows PowerShell 下可以选择以下方式，均不需要修改执行策略：
 
@@ -163,21 +179,11 @@ allowBuilds:
 `schedule.enabled` 默认是 `false`。当前支持的模式是 `session-reminder`：它只会在活跃的
 DSH 会话中提醒用户，不承诺可靠的后台 Cron，也不会作为无人值守爬虫运行。
 
-## 入口与命令
+## 运行入口
 
 - DSH 插件入口点为 `./dist/src/index.js`。
 - Runtime Skill 入口点为 `./dist/src/skill/job-hunting.skill.js`。
 
-```powershell
-pnpm.cmd install
-pnpm.cmd test              # 运行 Vitest 前会先清理并构建
-pnpm.cmd typecheck
-pnpm.cmd build
-pnpm.cmd lint
-pnpm.cmd dsh:smoke
-pnpm.cmd release:check
-```
-
-`pnpm test` 和 `pnpm release:check` 都会先清理并构建 `dist`，再运行 Vitest 检查；
-`pnpm build` 也会先移除旧的 `dist`。这些命令不会发布包，也不会全局安装任何内容。
-完整 Git 历史密钥扫描仍是外部发布前置条件，不由当前本地检查执行。详见[发布清单](./docs/release-checklist.md)。
+本 GitHub 目录是可直接安装的预构建交付目录，已经包含 `dist`、网站模板、
+`dsh.bundle` 和 `cordis.patch.yml`；使用者不需要在本目录执行 `pnpm install`、构建或测试。
+从源码构建、运行测试和执行完整发布检查，应在对应的开发工作区完成，步骤见[发布清单](./docs/release-checklist.md)。

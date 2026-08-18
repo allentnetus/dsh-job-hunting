@@ -3,6 +3,7 @@ import { pathToFileURL } from 'node:url';
 import { defineTool } from '@deepseek-ai/dsh-tools';
 import { buildDailyReport, writeReportBundle } from '../reports/daily-report.js';
 import { buildSite } from '../site/site-builder.js';
+import { readCareerProfile } from '../profile/profile-storage.js';
 import { readWorkspaceJson, resolveOutputRoot } from '../workspace/workspace-output.js';
 const jsonOutput = {
     schema: { type: 'json' },
@@ -22,7 +23,7 @@ export const createSiteTools = (resolveWorkspace, outputDir) => [
         output: jsonOutput,
         async execute(args, exec) {
             const workspace = await resolveWorkspace(exec);
-            const profile = await readWorkspaceJson(workspace.path, 'profile/profile.json');
+            const profile = await readCareerProfile(workspace.path);
             if (!profile)
                 throw new Error('PROFILE_NOT_CONFIRMED: confirm a profile before generating a report');
             const date = args.date ?? new Date().toISOString().slice(0, 10);
@@ -38,11 +39,29 @@ export const createSiteTools = (resolveWorkspace, outputDir) => [
         output: jsonOutput,
         async execute(_args, exec) {
             const workspace = await resolveWorkspace(exec);
+            const profile = await readCareerProfile(workspace.path);
             const result = await buildSite({
                 outputDir: resolveOutputRoot(workspace, outputDir),
                 jobs: await readJobs(workspace),
+                ...(profile
+                    ? {
+                        selection: {
+                            cities: profile.preferredLocations,
+                            industries: profile.targetIndustries,
+                            ...(profile.shareIndustriesAcrossCities !== undefined
+                                ? { shareIndustriesAcrossCities: profile.shareIndustriesAcrossCities }
+                                : {}),
+                            ...(profile.industriesByCity ? { industriesByCity: profile.industriesByCity } : {}),
+                        },
+                    }
+                    : {}),
             });
-            return asJson({ indexPath: result.indexPath, assetPaths: result.assetPaths, jobCount: result.data.jobs.length });
+            return asJson({
+                indexPath: result.indexPath,
+                assetPaths: result.assetPaths,
+                jobCount: result.data.jobs.length,
+                selection: result.data.selection,
+            });
         },
     }),
     defineTool({

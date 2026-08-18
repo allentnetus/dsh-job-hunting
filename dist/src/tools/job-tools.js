@@ -4,6 +4,7 @@ import { readLocalMarkdownFile } from '../jobs/local-markdown-adapter.js';
 import { dedupeJobs } from '../domain/job-ledger.js';
 import { createProfileDraftState, confirmProfileState } from '../profile/profile-state-machine.js';
 import { updateProfile } from '../profile/career-profile.js';
+import { readCareerProfile, writeCareerProfile } from '../profile/profile-storage.js';
 import { createInterestTools, createWorkspaceInterestLedgerStore } from '../interest/interest-tools.js';
 import { defineTool } from '@deepseek-ai/dsh-tools';
 import { readWorkspaceJson, resolveOutputRoot, writeWorkspaceJson } from '../workspace/workspace-output.js';
@@ -29,7 +30,7 @@ export const createJobTools = (resolveWorkspace) => [
             const document = await readWorkspaceJson(workspace.path, 'data/resume-document.json');
             if (!document)
                 throw new Error('RESUME_NOT_FOUND: parse and assess a resume before profile update');
-            const currentProfile = await readWorkspaceJson(workspace.path, 'profile/profile.json');
+            const currentProfile = await readCareerProfile(workspace.path);
             const feedback = args.feedback;
             const draftResult = currentProfile
                 ? { ok: true, value: updateProfile(currentProfile, feedback) }
@@ -43,7 +44,7 @@ export const createJobTools = (resolveWorkspace) => [
             const confirmed = confirmProfileState(draft);
             if (!confirmed.ok)
                 throw new Error(`${confirmed.error.code}: cannot transition from ${confirmed.error.from} to ${confirmed.error.to}`);
-            await writeWorkspaceJson(workspace.path, 'profile/profile.json', confirmed.value);
+            await writeCareerProfile(workspace.path, confirmed.value);
             return asJson(confirmed.value);
         },
     }),

@@ -82,6 +82,14 @@ export const createDraftProfile = (input) => ({
         evidence: { ...suggestion.evidence },
     })) ?? [],
     proposedVersion: 1,
+    ...(input.shareIndustriesAcrossCities !== undefined
+        ? { shareIndustriesAcrossCities: input.shareIndustriesAcrossCities }
+        : {}),
+    ...(input.industriesByCity
+        ? {
+            industriesByCity: Object.fromEntries(Object.entries(input.industriesByCity).map(([city, industries]) => [city, unique(industries)])),
+        }
+        : {}),
 });
 export const confirmProfile = (draft) => ({
     state: 'profile-confirmed',
@@ -101,6 +109,10 @@ export const confirmProfile = (draft) => ({
     userFeedbackHistory: [...(draft.previousFeedbackHistory ?? []), { ...draft.userFeedback }],
     version: draft.proposedVersion,
     confirmedAt: new Date().toISOString(),
+    ...(draft.shareIndustriesAcrossCities !== undefined
+        ? { shareIndustriesAcrossCities: draft.shareIndustriesAcrossCities }
+        : {}),
+    ...(draft.industriesByCity ? { industriesByCity: { ...draft.industriesByCity } } : {}),
 });
 export const updateProfile = (profile, feedback) => {
     const draftInput = feedback.assessment
@@ -131,6 +143,16 @@ export const updateProfile = (profile, feedback) => {
         baseProfileVersion: profile.version,
         proposedVersion: profile.version + 1,
         previousFeedbackHistory: [...(profile.userFeedbackHistory ?? [])],
+        ...(draft.shareIndustriesAcrossCities !== undefined
+            ? { shareIndustriesAcrossCities: draft.shareIndustriesAcrossCities }
+            : profile.shareIndustriesAcrossCities !== undefined
+                ? { shareIndustriesAcrossCities: profile.shareIndustriesAcrossCities }
+                : {}),
+        ...(draft.industriesByCity
+            ? { industriesByCity: { ...draft.industriesByCity } }
+            : profile.industriesByCity
+                ? { industriesByCity: { ...profile.industriesByCity } }
+                : {}),
     };
 };
 //# sourceMappingURL=career-profile.js.map

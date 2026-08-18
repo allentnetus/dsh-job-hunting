@@ -32,6 +32,8 @@ export interface JobInput {
     matchReasons?: readonly string[];
 }
 export interface CareerProfile {
+    /** Persisted profile schema version; missing means a legacy pre-versioned profile. */
+    schemaVersion?: number;
     targetRoles: string[];
     targetIndustries: string[];
     targetCompanies: string[];
@@ -46,6 +48,9 @@ export interface CareerProfile {
     modelSuggestions?: ResumeAssessmentSuggestion[];
     notes?: string[];
     unknowns?: string[];
+    /** Defaults to true; set false only after the user explicitly requests per-city taxonomies. */
+    shareIndustriesAcrossCities?: boolean;
+    industriesByCity?: Record<string, string[]>;
 }
 export interface ProfileFeedback {
     assessment?: ResumeAssessment;
@@ -57,6 +62,8 @@ export interface ProfileFeedback {
     keywords?: readonly string[];
     avoid?: readonly string[];
     notes?: readonly string[];
+    shareIndustriesAcrossCities?: boolean;
+    industriesByCity?: Readonly<Record<string, readonly string[]>>;
 }
 export interface CareerProfileDraft {
     state: 'profile-draft';
@@ -74,6 +81,8 @@ export interface CareerProfileDraft {
     baseProfileVersion?: number;
     proposedVersion: number;
     previousFeedbackHistory?: ProfileFeedback[];
+    shareIndustriesAcrossCities?: boolean;
+    industriesByCity?: Record<string, string[]>;
 }
 export interface InterestState {
     marks: Record<string, InterestMark>;

@@ -64,27 +64,23 @@ GitHub 仓库根目录必须包含 `package.json`、`dsh.bundle` 字段和
 `cordis.patch.yml`。DSH 会在安装后把声明了 `dsh.bundle` 的依赖加入
 `dsh.profile.bundles`，不需要手动复制补丁。
 
-### 从本地源码安装
+### 从本地目录安装
 
-在插件仓库中先构建：
-
-```powershell
-Set-Location 'G:\发布\Job Hunting Skill'
-pnpm.cmd install
-pnpm.cmd build
-```
-
-再从任意目录执行：
+本发布目录已经包含构建后的 `dist`，可以在下载或解压后的目录直接安装；将下面的
+`<release-directory>` 替换为实际路径：
 
 ```powershell
-dsh.cmd plugin --profile web add 'G:\发布\Job Hunting Skill'
+dsh.cmd plugin --profile web add '<release-directory>'
 ```
 
 如果当前 Windows 环境没有把 `dsh.cmd` 加入 PATH，可以使用 `npx.cmd` 调用同一入口：
 
 ```powershell
-npx.cmd @deepseek-ai/dsh@0.1.0-rc.6 plugin --profile web add 'G:\发布\Job Hunting Skill'
+npx.cmd @deepseek-ai/dsh@0.1.0-rc.6 plugin --profile web add '<release-directory>'
 ```
+
+源码构建和测试不在本发布目录中进行；如需从源码验证，请在源码工作区完成构建后，
+再把构建产物复制到独立的发布目录。
 
 ## 验证与重启
 
@@ -148,8 +144,51 @@ www.iguopin.com
 
 ## 更新、卸载与问题排查
 
+### 手动更新（推荐）
+
+插件版本、用户求职画像和岗位数据是三套独立内容。更新插件只替换代码、模板和
+`cordis.patch.yml`，不会用新包覆盖 Workspace 中的 `profile/profile.json`、岗位数据、收藏或备注。
+
+先查看 profile 中可更新的依赖，再明确执行更新：
+
 ```powershell
+dsh.cmd plugin --profile web outdated
 dsh.cmd plugin --profile web update dsh-job-hunting
+dsh.cmd --profile web --dump-config | Select-String 'dsh-job-hunting|job-hunting'
+```
+
+更新完成后重启 DSH。`dsh plugin` 会把更新交给 profile 内的 pnpm，并重新核对
+`dsh.profile.bundles`；它不会在当前已经运行的 Node 进程中热替换插件。
+旧版 `profile/profile.json` 第一次被新插件读取时只会补充 schema 标记，并保留
+`profile/profile.json.pre-schema-<version>.bak`，不会覆盖用户已经确认的城市、行业、分类共享规则、收藏或备注。
+
+如果需要回到上一版本，优先恢复更新前的 profile `package.json` 和 `pnpm-lock.yaml`，再执行：
+
+```powershell
+dsh.cmd plugin --profile web install --frozen-lockfile
+```
+
+如果使用 npm 发布渠道，也可以明确安装一个已验证的旧版本：
+
+```powershell
+dsh.cmd plugin --profile web add dsh-job-hunting@0.1.2
+```
+
+### 源码包的构建授权（仅适用于包含源码的分支）
+
+本发布目录已经预构建，不包含 `prepare` 或其他构建脚本；从这里安装 GitHub tag tarball
+不需要额外授权。只有在另行安装包含源码的开发分支时，pnpm 才可能阻止构建脚本。此时只对
+确认可信的包在使用者自己的 profile 中授权：
+
+```yaml
+allowBuilds:
+  dsh-job-hunting: true
+```
+
+日常稳定更新更建议使用 npm 预构建包；本仓库的 GitHub tag 适合安装和回滚。发布新版本时，
+只在代码、模板或插件契约发生对外变化后递增版本号，不要把每天的岗位采集数据更新做成插件版本。
+
+```powershell
 dsh.cmd plugin --profile web remove dsh-job-hunting
 dsh.cmd --profile web --dump-config
 ```
