@@ -81,8 +81,8 @@ dsh.cmd plugin --profile web add "https://codeload.github.com/allentnetus/dsh-jo
 这里使用 GitHub tag tarball URL，不调用 Git `ls-remote`，不依赖本机 GitHub SSH host key，
 也不受 Git for Windows Schannel 握手问题影响。不要改成 `github:` 简写。
 
-如需固定到不可变提交，请使用 GitHub Release `v0.1.2` 页面显示的完整 commit SHA；日常安装直接使用
-上面的版本标签即可。
+如需固定到不可变提交，请使用 GitHub tag `v0.1.2` 指向的完整 commit SHA（可在 tag 页面或提交历史中查看）；
+日常安装直接使用上面的版本标签即可。
 
 `web` 是示例 profile 名称；如果使用者使用的是 `demo` 或其他 profile，将命令中的 `web`
 替换为自己的 profile 名称。
