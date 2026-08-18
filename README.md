@@ -1,5 +1,9 @@
 # Job Hunting DSH 插件
 
+<p align="center">
+  <img src="assets/social-preview.png" alt="Job Hunting 插件预览图" width="960">
+</p>
+
 `dsh-job-hunting` 是一个本地优先的 DeepSeek Harness 插件和 Runtime Skill，
 用于整理招聘岗位、确认求职画像，以及维护意向岗位。v0.1 包的自有代码和模板
 采用 MIT 许可证；第三方依赖仍保留各自许可证。
