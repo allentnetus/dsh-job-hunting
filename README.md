@@ -75,13 +75,13 @@ pnpm.cmd --version
 
 ```powershell
 dsh.cmd --help
-dsh.cmd plugin --profile web add "https://codeload.github.com/allentnetus/dsh-job-hunting/tar.gz/refs/tags/v0.1.2"
+dsh.cmd plugin --profile web add "https://codeload.github.com/allentnetus/dsh-job-hunting/tar.gz/refs/tags/v0.1.3"
 ```
 
 这里使用 GitHub tag tarball URL，不调用 Git `ls-remote`，不依赖本机 GitHub SSH host key，
 也不受 Git for Windows Schannel 握手问题影响。不要改成 `github:` 简写。
 
-如需固定到不可变提交，请使用 GitHub tag `v0.1.2` 指向的完整 commit SHA（可在 tag 页面或提交历史中查看）；
+如需固定到不可变提交，请使用 GitHub tag `v0.1.3` 指向的完整 commit SHA（可在 tag 页面或提交历史中查看）；
 日常安装直接使用上面的版本标签即可。
 
 `web` 是示例 profile 名称；如果使用者使用的是 `demo` 或其他 profile，将命令中的 `web`
@@ -175,6 +175,16 @@ allowBuilds:
 `minIntervalMs` 时间间隔限制，并要求工具调用传入 `confirmed: true`。找不到 `bsk`、白名单
 为空或需要登录/CAPTCHA 时，会报告不可用或需要人工协助。
 
+首次使用浏览器采集前，请按照 [Tencent/BrowserSkill](https://github.com/Tencent/BrowserSkill)
+的说明安装 CLI 和浏览器扩展，然后在同一终端检查：
+
+```powershell
+bsk --help
+bsk status
+```
+
+`bsk status` 能看到可用会话后，再在 DSH 对话中确认具体白名单 URL 和只读范围。
+
 采集结束后会停止 BrowserSkill 会话，不会提取凭证、提交申请、发送招聘消息，也不会绕过认证
 或 CAPTCHA 控制。详见[BrowserSkill 集成说明](./docs/browser-skill-integration.md)。
 
@@ -184,14 +194,17 @@ allowBuilds:
 原生 Schedule 时，必须在启动会话时显式应用可选的宿主层 overlay：
 
 ```powershell
-# 将 <OVERLAY_PATH> 替换为 dsh-schedule.cordis.yml 的实际路径
-dsh.cmd web --patch '<OVERLAY_PATH>'
+$overlayPath = Join-Path (Get-Location) 'dsh-schedule.cordis.yml'
+Invoke-WebRequest `
+  -Uri 'https://raw.githubusercontent.com/allentnetus/dsh-job-hunting/v0.1.3/dsh-schedule.cordis.yml' `
+  -OutFile $overlayPath
+dsh.cmd web --patch $overlayPath
 ```
 
 仓库根目录的 [dsh-schedule.cordis.yml](./dsh-schedule.cordis.yml) 只加载
 `@deepseek-ai/dsh-time-context` 和 `@deepseek-ai/dsh-schedule`。它不会写入默认的
-`cordis.patch.yml`，也不会随 npm 包发布；从 npm 安装的使用者需要从源码仓库取得该 overlay，
-或在自己的 DSH profile patch 中写入同等配置。
+`cordis.patch.yml`，也不会随 npm 包发布；上面的版本固定 URL 可供 GitHub 安装用户直接取得，
+从 npm 安装的使用者也需要单独下载该 overlay，或在自己的 DSH profile patch 中写入同等配置。
 
 DSH 原生 Schedule 只对当前会话有效；新会话需要再次使用 `--patch`，并重新创建提醒。它的职责
 是到时间提醒，不是 Windows Cron、可靠的后台任务或无人值守爬虫。提醒到期后，提醒本身不构成

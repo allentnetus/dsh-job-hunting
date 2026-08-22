@@ -54,7 +54,7 @@ dsh.cmd plugin --profile web add dsh-job-hunting
 ### 从 GitHub 安装
 
 ```powershell
-dsh.cmd plugin --profile web add "https://codeload.github.com/allentnetus/dsh-job-hunting/tar.gz/refs/tags/v0.1.2"
+dsh.cmd plugin --profile web add "https://codeload.github.com/allentnetus/dsh-job-hunting/tar.gz/refs/tags/v0.1.3"
 ```
 
 这里使用 GitHub tag tarball URL，不调用 Git `ls-remote`，不依赖本机 GitHub SSH host key，
@@ -69,7 +69,8 @@ GitHub 仓库根目录必须包含 `package.json`、`dsh.bundle` 字段和
 在插件仓库中先构建：
 
 ```powershell
-Set-Location 'G:\发布\Job Hunting Skill'
+$pluginSourcePath = 'D:\path\to\dsh-job-hunting'
+Set-Location $pluginSourcePath
 pnpm.cmd install
 pnpm.cmd build
 ```
@@ -77,13 +78,13 @@ pnpm.cmd build
 再从任意目录执行：
 
 ```powershell
-dsh.cmd plugin --profile web add 'G:\发布\Job Hunting Skill'
+dsh.cmd plugin --profile web add $pluginSourcePath
 ```
 
 如果当前 Windows 环境没有把 `dsh.cmd` 加入 PATH，可以使用 `npx.cmd` 调用同一入口：
 
 ```powershell
-npx.cmd @deepseek-ai/dsh@0.1.0-rc.6 plugin --profile web add 'G:\发布\Job Hunting Skill'
+npx.cmd @deepseek-ai/dsh@0.1.0-rc.6 plugin --profile web add $pluginSourcePath
 ```
 
 ## 验证与重启
@@ -103,11 +104,14 @@ dsh.cmd --profile web --dump-config | Select-String 'job-hunting|dsh-job-hunting
 默认安装不会启用 DSH 原生 Schedule。仓库根目录的
 [`dsh-schedule.cordis.yml`](../dsh-schedule.cordis.yml) 是独立的宿主层 overlay，不会写入默认
 `cordis.patch.yml`，也不会包含在 npm 发布包中。需要使用时，先将 overlay 文件放在使用者可读的
-位置，再在启动会话时显式应用：
+位置，再在启动会话时显式应用。可以用当前版本的固定 URL 下载 overlay：
 
 ```powershell
-# 将 <OVERLAY_PATH> 替换为 dsh-schedule.cordis.yml 的实际路径
-dsh.cmd web --patch '<OVERLAY_PATH>'
+$overlayPath = Join-Path (Get-Location) 'dsh-schedule.cordis.yml'
+Invoke-WebRequest `
+  -Uri 'https://raw.githubusercontent.com/allentnetus/dsh-job-hunting/v0.1.3/dsh-schedule.cordis.yml' `
+  -OutFile $overlayPath
+dsh.cmd web --patch $overlayPath
 ```
 
 如果使用的 profile 不是 `web`，将命令中的 `web` 替换为实际 profile 名称。该 overlay 加载
@@ -135,6 +139,15 @@ www.liepin.com
 www.zhaopin.com
 www.iguopin.com
 ```
+
+首次配置 BrowserSkill 时，先按照其项目说明安装 CLI 和浏览器扩展，再在同一终端执行：
+
+```powershell
+bsk --help
+bsk status
+```
+
+只有 `bsk status` 能看到可用会话后，才继续在 DSH 对话中确认白名单 URL 和只读采集范围。
 
 在 DSH profile 中追加站点，编辑：
 
@@ -196,10 +209,10 @@ dsh.cmd --profile web --dump-config | Select-String 'dsh-job-hunting|job-hunting
 dsh.cmd plugin --profile web install --frozen-lockfile
 ```
 
-如果使用 npm 发布渠道，也可以明确安装一个已验证的旧版本：
+如果使用 npm 发布渠道，也可以明确安装一个已验证的版本：
 
 ```powershell
-dsh.cmd plugin --profile web add dsh-job-hunting@0.1.2
+dsh.cmd plugin --profile web add dsh-job-hunting@0.1.3
 ```
 
 ### GitHub 源码安装的构建授权
