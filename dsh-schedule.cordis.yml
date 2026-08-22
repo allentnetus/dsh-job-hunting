@@ -1,0 +1,12 @@
+# Optional host-level overlay for DSH's native, session-local Schedule.
+# Apply it at launch with:
+#   dsh.cmd web --patch 'G:\发布\Job Hunting Skill\dsh-schedule.cordis.yml'
+#
+# This overlay deliberately stays outside the plugin bundle so the default
+# Job Hunting installation remains schedule-free until the operator opts in.
+- insert:
+    - id: time-context
+      name: '@deepseek-ai/dsh-time-context'
+
+    - id: schedule
+      name: '@deepseek-ai/dsh-schedule'

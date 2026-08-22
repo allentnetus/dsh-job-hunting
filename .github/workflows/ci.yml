@@ -1,4 +1,4 @@
-name: Release package validation
+name: CI
 
 on:
   push:
@@ -9,8 +9,8 @@ permissions:
   contents: read
 
 jobs:
-  package:
-    name: Validate prebuilt package
+  quality:
+    name: Build, test, and DSH smoke
     runs-on: ubuntu-latest
     steps:
       - name: Check out full history
@@ -18,63 +18,34 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.19.0
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 24
+          cache: pnpm
 
-      - name: Validate release contents
-        run: |
-          node --input-type=module <<'NODE'
-          import { readdir, readFile, stat } from 'node:fs/promises';
-          import { join, relative } from 'node:path';
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
-          const manifest = JSON.parse(await readFile('package.json', 'utf8'));
-          const changelog = await readFile('CHANGELOG.md', 'utf8');
-          const required = [
-            'dist/src/index.js',
-            'dist/src/index.d.ts',
-            'dist/src/skill/job-hunting.skill.js',
-            'templates/default/index.html',
-            'dsh.bundle',
-            'cordis.patch.yml',
-          ];
-          for (const file of required) {
-            try {
-              await stat(file);
-            } catch {
-              throw new Error(`Missing required release file: ${file}`);
-            }
-          }
+      - name: Run tests
+        run: pnpm test
 
-          if (manifest.scripts || manifest.devDependencies) {
-            throw new Error('Release package must not reference source-only scripts or devDependencies');
-          }
+      - name: Typecheck
+        run: pnpm typecheck
 
-          const forbidden = /^(?:src|tests|scripts|node_modules|\.superpowers)(?:[\\/]|$)|(?:^|[\\/])(?:pnpm-lock\.yaml|pnpm-workspace\.yaml|tsconfig\.json|vitest\.config\.ts)$/;
-          const files = [];
-          async function walk(dir) {
-            for (const entry of await readdir(dir, { withFileTypes: true })) {
-              if (dir === '.' && entry.name === '.git') continue;
-              const path = join(dir, entry.name);
-              if (entry.isDirectory()) await walk(path);
-              else files.push(relative('.', path).replaceAll('\\\\', '/'));
-            }
-          }
-          await walk('.');
-          const unexpected = files.filter((file) => forbidden.test(file));
-          if (unexpected.length) throw new Error(`Source-only files found: ${unexpected.join(', ')}`);
-          if (!changelog.includes(`## ${manifest.version}`)) {
-            throw new Error(`CHANGELOG.md has no section for package version ${manifest.version}`);
-          }
-          console.log(`Validated ${files.length} release files for ${manifest.name}@${manifest.version}`);
-          NODE
+      - name: Lint
+        run: pnpm lint
+
+      - name: Verify installation in an isolated DSH profile
+        run: pnpm dsh:smoke
 
       - name: Verify package contents
-        run: npm pack --dry-run --ignore-scripts
-
-      - name: Check whitespace errors
-        run: git diff --check
+        run: pnpm pack --dry-run
 
   secret-scan:
     name: Scan complete Git history for secrets

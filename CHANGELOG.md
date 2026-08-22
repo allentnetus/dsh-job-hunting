@@ -2,9 +2,10 @@
 
 ## Unreleased
 
+- 增加可选的 DSH 原生 Schedule 宿主层 overlay 及配套文档；默认插件包不启用 Schedule，提醒到期后仍需用户确认白名单 URL 和只读采集范围。
 - 增加 `profile/profile.json` 的持久化 schema 版本标记与非破坏性迁移；首次迁移会保留
   `profile.json.pre-schema-<version>.bak` 备份，不覆盖用户的城市、行业、分类共享规则、收藏或备注。
-- 整理 GitHub 发布目录校验，明确预构建交付目录与源码工作区的边界，避免发布包引用不存在的构建脚本。
+- 为 Git/npm 安装补充 `prepare` 和 `prepack` 构建生命周期，并在发布清单中加入升级验证与回滚检查。
 - 将插件代码版本更新与岗位采集数据更新分开，继续采用人工确认更新，不执行运行时静默自升级。
 
 ## 0.1.2
