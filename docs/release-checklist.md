@@ -24,6 +24,7 @@
 - [ ] 在干净 profile 中验证公开 GitHub tag tarball 安装命令（例如
       `dsh plugin --profile web add "https://codeload.github.com/OWNER/REPOSITORY/tar.gz/refs/tags/v0.1.3"`）；不要使用 `github:` 简写。
 - [ ] 已创建本次发布对应的版本 tag（当前为 `v0.1.3`），并在 GitHub 仓库添加 `dsh-plugin` topic。
+- [ ] 已创建与该 tag 对应的 GitHub Release（不能只推送 Git tag），并在公开 Releases 页面核验标题、Latest 标记、tag/commit 关联和源码附件。
 - [ ] 已复核 `pnpm licenses list`，且 `THIRD-PARTY-NOTICES.md` 分开记录 MIT、BSD-3-Clause、
       Apache-2.0 和其他所有实际报告的许可证。
 - [ ] 使用 Gitleaks 或项目批准的等价扫描器扫描完整 Git 历史：
