@@ -180,14 +180,41 @@ allowBuilds:
 
 ## 定时行为
 
-`schedule.enabled` 默认是 `false`。当前支持的模式是 `session-reminder`：它只会在活跃的
-DSH 会话中提醒用户，不承诺可靠的后台 Cron，也不会作为无人值守爬虫运行。
+插件配置中的 `schedule.enabled` 默认是 `false`；它不会创建独立的后台调度器。需要使用 DSH
+原生 Schedule 时，必须在启动会话时显式应用可选的宿主层 overlay：
 
-## 运行入口
+```powershell
+# 将 <OVERLAY_PATH> 替换为 dsh-schedule.cordis.yml 的实际路径
+dsh.cmd web --patch '<OVERLAY_PATH>'
+```
+
+仓库根目录的 [dsh-schedule.cordis.yml](./dsh-schedule.cordis.yml) 只加载
+`@deepseek-ai/dsh-time-context` 和 `@deepseek-ai/dsh-schedule`。它不会写入默认的
+`cordis.patch.yml`，也不会随 npm 包发布；从 npm 安装的使用者需要从源码仓库取得该 overlay，
+或在自己的 DSH profile patch 中写入同等配置。
+
+DSH 原生 Schedule 只对当前会话有效；新会话需要再次使用 `--patch`，并重新创建提醒。它的职责
+是到时间提醒，不是 Windows Cron、可靠的后台任务或无人值守爬虫。提醒到期后，提醒本身不构成
+采集授权：必须由用户确认本轮具体白名单 URL 和只读范围，之后才能调用
+`job_hunting_collect_browser_jobs`，采集成功后再生成当天报告。登录、CAPTCHA、限流或其他
+网站限制仍需要人工处理。详见[DSH 安装与 Schedule 说明](./docs/dsh-installation.md)和
+[BrowserSkill 集成说明](./docs/browser-skill-integration.md)。
+
+## 入口与命令
 
 - DSH 插件入口点为 `./dist/src/index.js`。
 - Runtime Skill 入口点为 `./dist/src/skill/job-hunting.skill.js`。
 
-本 GitHub 目录是可直接安装的预构建交付目录，已经包含 `dist`、网站模板、
-`dsh.bundle` 和 `cordis.patch.yml`；使用者不需要在本目录执行 `pnpm install`、构建或测试。
-从源码构建、运行测试和执行完整发布检查，应在对应的开发工作区完成，步骤见[发布清单](./docs/release-checklist.md)。
+```powershell
+pnpm.cmd install
+pnpm.cmd test              # 运行 Vitest 前会先清理并构建
+pnpm.cmd typecheck
+pnpm.cmd build
+pnpm.cmd lint
+pnpm.cmd dsh:smoke
+pnpm.cmd release:check
+```
+
+`pnpm test` 和 `pnpm release:check` 都会先清理并构建 `dist`，再运行 Vitest 检查；
+`pnpm build` 也会先移除旧的 `dist`。这些命令不会发布包，也不会全局安装任何内容。
+完整 Git 历史密钥扫描仍是外部发布前置条件，不由当前本地检查执行。详见[发布清单](./docs/release-checklist.md)。

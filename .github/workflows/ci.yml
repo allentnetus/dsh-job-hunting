@@ -31,6 +31,8 @@ jobs:
 
           const manifest = JSON.parse(await readFile('package.json', 'utf8'));
           const changelog = await readFile('CHANGELOG.md', 'utf8');
+          const pluginPatch = await readFile('cordis.patch.yml', 'utf8');
+          const scheduleOverlay = await readFile('dsh-schedule.cordis.yml', 'utf8');
           const required = [
             'dist/src/index.js',
             'dist/src/index.d.ts',
@@ -38,6 +40,7 @@ jobs:
             'templates/default/index.html',
             'dsh.bundle',
             'cordis.patch.yml',
+            'dsh-schedule.cordis.yml',
           ];
           for (const file of required) {
             try {
@@ -49,6 +52,15 @@ jobs:
 
           if (manifest.scripts || manifest.devDependencies) {
             throw new Error('Release package must not reference source-only scripts or devDependencies');
+          }
+          if (manifest.files?.includes('dsh-schedule.cordis.yml')) {
+            throw new Error('Host-level Schedule overlay must stay outside the npm package files list');
+          }
+          if (pluginPatch.includes('@deepseek-ai/dsh-schedule')) {
+            throw new Error('Default plugin patch must not enable native DSH Schedule');
+          }
+          if (!scheduleOverlay.includes('@deepseek-ai/dsh-schedule')) {
+            throw new Error('Schedule overlay must enable native DSH Schedule explicitly');
           }
 
           const forbidden = /^(?:src|tests|scripts|node_modules|\.superpowers)(?:[\\/]|$)|(?:^|[\\/])(?:pnpm-lock\.yaml|pnpm-workspace\.yaml|tsconfig\.json|vitest\.config\.ts)$/;

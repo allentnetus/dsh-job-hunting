@@ -64,23 +64,27 @@ GitHub 仓库根目录必须包含 `package.json`、`dsh.bundle` 字段和
 `cordis.patch.yml`。DSH 会在安装后把声明了 `dsh.bundle` 的依赖加入
 `dsh.profile.bundles`，不需要手动复制补丁。
 
-### 从本地目录安装
+### 从本地源码安装
 
-本发布目录已经包含构建后的 `dist`，可以在下载或解压后的目录直接安装；将下面的
-`<release-directory>` 替换为实际路径：
+在插件仓库中先构建：
 
 ```powershell
-dsh.cmd plugin --profile web add '<release-directory>'
+Set-Location 'G:\发布\Job Hunting Skill'
+pnpm.cmd install
+pnpm.cmd build
+```
+
+再从任意目录执行：
+
+```powershell
+dsh.cmd plugin --profile web add 'G:\发布\Job Hunting Skill'
 ```
 
 如果当前 Windows 环境没有把 `dsh.cmd` 加入 PATH，可以使用 `npx.cmd` 调用同一入口：
 
 ```powershell
-npx.cmd @deepseek-ai/dsh@0.1.0-rc.6 plugin --profile web add '<release-directory>'
+npx.cmd @deepseek-ai/dsh@0.1.0-rc.6 plugin --profile web add 'G:\发布\Job Hunting Skill'
 ```
-
-源码构建和测试不在本发布目录中进行；如需从源码验证，请在源码工作区完成构建后，
-再把构建产物复制到独立的发布目录。
 
 ## 验证与重启
 
@@ -93,6 +97,30 @@ dsh.cmd --profile web --dump-config | Select-String 'job-hunting|dsh-job-hunting
 
 验证成功后重启当前 `dsh.cmd web`/桌面 Harness。插件注册的 Runtime Skill 名称是
 `job-hunting`，工具名称以 `job_hunting_` 开头。
+
+## 可选启用 DSH 原生 Schedule
+
+默认安装不会启用 DSH 原生 Schedule。仓库根目录的
+[`dsh-schedule.cordis.yml`](../dsh-schedule.cordis.yml) 是独立的宿主层 overlay，不会写入默认
+`cordis.patch.yml`，也不会包含在 npm 发布包中。需要使用时，先将 overlay 文件放在使用者可读的
+位置，再在启动会话时显式应用：
+
+```powershell
+# 将 <OVERLAY_PATH> 替换为 dsh-schedule.cordis.yml 的实际路径
+dsh.cmd web --patch '<OVERLAY_PATH>'
+```
+
+如果使用的 profile 不是 `web`，将命令中的 `web` 替换为实际 profile 名称。该 overlay 加载
+`@deepseek-ai/dsh-time-context` 和 `@deepseek-ai/dsh-schedule`；它只对本次 DSH 会话生效，
+新会话需要再次应用 patch。然后在同一会话中创建提醒，例如：
+
+```text
+每天 09:00 提醒我检查新增 JD；提醒时先让我确认白名单 URL 和只读采集范围。
+```
+
+Schedule 到期后只是提醒，不是岗位采集授权。用户必须确认本轮具体 URL 和只读范围，之后才可以
+调用 `job_hunting_collect_browser_jobs`；采集成功后再生成当天报告。提醒内容不具备绕过登录、
+CAPTCHA、限流或其他网站限制的权限。没有应用 overlay 时，插件不会自行创建每日调度任务。
 
 ## 配置 Tencent/BrowserSkill
 
@@ -174,18 +202,17 @@ dsh.cmd plugin --profile web install --frozen-lockfile
 dsh.cmd plugin --profile web add dsh-job-hunting@0.1.2
 ```
 
-### 源码包的构建授权（仅适用于包含源码的分支）
+### GitHub 源码安装的构建授权
 
-本发布目录已经预构建，不包含 `prepare` 或其他构建脚本；从这里安装 GitHub tag tarball
-不需要额外授权。只有在另行安装包含源码的开发分支时，pnpm 才可能阻止构建脚本。此时只对
-确认可信的包在使用者自己的 profile 中授权：
+从 GitHub 源码安装时，pnpm 可能会阻止 `prepare` 构建脚本。只对确认可信的包在使用者自己的
+profile 中授权：
 
 ```yaml
 allowBuilds:
   dsh-job-hunting: true
 ```
 
-日常稳定更新更建议使用 npm 预构建包；本仓库的 GitHub tag 适合安装和回滚。发布新版本时，
+日常稳定更新更建议使用 npm 预构建包；GitHub tag 或 commit 适合审查源码和回滚。发布新版本时，
 只在代码、模板或插件契约发生对外变化后递增版本号，不要把每天的岗位采集数据更新做成插件版本。
 
 ```powershell

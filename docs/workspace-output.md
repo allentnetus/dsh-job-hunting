@@ -35,8 +35,13 @@
 ## 静态网站与提醒
 
 网站在构建阶段内嵌数据，可以通过 `file://` 打开，不会在运行时请求旁边的 JSON 文件。
-`schedule.enabled` 默认是 `false`；启用后唯一支持的模式是 `session-reminder`，即在活跃
-会话中提醒用户，而不是保证后台运行的调度器。
+插件配置中的 `schedule.enabled` 默认是 `false`，不能替代宿主的 DSH 原生 Schedule。原生
+Schedule 必须通过独立的 `dsh-schedule.cordis.yml` overlay 在启动时显式启用，并且只对当前
+DSH 会话有效；它到时间提醒用户，不保证 Windows 后台运行，也不会作为无人值守爬虫运行。
+
+提醒本身不会写入岗位数据或授权浏览器采集。到期后仍需用户确认本轮白名单 URL 和只读范围，
+再调用 `job_hunting_collect_browser_jobs`；采集成功后才生成当天报告。岗位、画像和报告仍然
+只写入本节前文所述的活跃 Workspace。
 
 ## 经批准的 Windows 快捷方式
 
