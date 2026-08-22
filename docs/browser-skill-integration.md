@@ -5,6 +5,19 @@
 （`bsk`）和浏览器扩展作为运行前置条件；它们不是 npm 依赖，不会由本包安装，也不会被打包或复制
 到发布内容中。
 
+## 首次运行检查
+
+请先按照 [Tencent/BrowserSkill](https://github.com/Tencent/BrowserSkill) 的项目说明安装 CLI 和
+浏览器扩展，再在启动 DSH 的同一终端执行：
+
+```powershell
+bsk --help
+bsk status
+```
+
+`bsk status` 能看到可用会话后，才继续在 DSH 对话中确认本轮具体白名单 URL 和只读范围。
+如果命令不存在或没有可用会话，先修复 BrowserSkill 前置条件；插件不会切换到未经审查的采集路径。
+
 ## 宿主配置
 
 工具默认启用，并内置 51job、BOSS 直聘、猎聘、智联招聘和国聘的精确主机名。DeepSeek Harness
@@ -64,8 +77,11 @@ DSH 原生 Schedule 是可选的会话级提醒层，不是 BrowserSkill 的采�
 [`dsh-schedule.cordis.yml`](../dsh-schedule.cordis.yml) overlay：
 
 ```powershell
-# 将 <OVERLAY_PATH> 替换为 overlay 文件的实际路径
-dsh.cmd web --patch '<OVERLAY_PATH>'
+$overlayPath = Join-Path (Get-Location) 'dsh-schedule.cordis.yml'
+Invoke-WebRequest `
+  -Uri 'https://raw.githubusercontent.com/allentnetus/dsh-job-hunting/v0.1.3/dsh-schedule.cordis.yml' `
+  -OutFile $overlayPath
+dsh.cmd web --patch $overlayPath
 ```
 
 提醒到期后的固定流程是：

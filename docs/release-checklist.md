@@ -13,14 +13,17 @@
 - [ ] `pnpm pack --dry-run` 已包含 `prepare`/`prepack` 构建后的 `dist`、网站模板和 `cordis.patch.yml`。
 - [ ] 如需验证 DSH 原生 Schedule，单独应用 `dsh-schedule.cordis.yml` overlay；确认它不写入默认
       `cordis.patch.yml`，且默认发布包不包含该宿主层 overlay。
+- [ ] 验证用户可以从版本固定 URL 下载 Schedule overlay：
+      `https://raw.githubusercontent.com/allentnetus/dsh-job-hunting/v0.1.3/dsh-schedule.cordis.yml`，
+      再使用 `dsh.cmd <profile> --patch <path>` 启动当前会话。
 - [ ] 在临时 profile 中从上一版本升级到本版本，确认 `dsh.profile.bundles` 保持包含
       `dsh-job-hunting`，并验证 `dsh --profile <name> --dump-config`。
 - [ ] 使用旧版 `profile/profile.json` 执行一次升级读取，确认生成
       `profile/profile.json.pre-schema-<version>.bak`，且城市、行业、分类共享规则、收藏和备注不变。
 - [ ] `git diff --check`
 - [ ] 在干净 profile 中验证公开 GitHub tag tarball 安装命令（例如
-      `dsh plugin --profile web add "https://codeload.github.com/OWNER/REPOSITORY/tar.gz/refs/tags/v0.1.2"`）；不要使用 `github:` 简写。
-- [ ] 已创建本次发布对应的版本 tag（当前为 `v0.1.2`），并在 GitHub 仓库添加 `dsh-plugin` topic。
+      `dsh plugin --profile web add "https://codeload.github.com/OWNER/REPOSITORY/tar.gz/refs/tags/v0.1.3"`）；不要使用 `github:` 简写。
+- [ ] 已创建本次发布对应的版本 tag（当前为 `v0.1.3`），并在 GitHub 仓库添加 `dsh-plugin` topic。
 - [ ] 已复核 `pnpm licenses list`，且 `THIRD-PARTY-NOTICES.md` 分开记录 MIT、BSD-3-Clause、
       Apache-2.0 和其他所有实际报告的许可证。
 - [ ] 使用 Gitleaks 或项目批准的等价扫描器扫描完整 Git 历史：
@@ -44,6 +47,8 @@
 - [ ] `docs/dsh-installation.md` 已说明 DSH `web` profile、`dsh plugin` 安装命令、验证命令、
       profile `cordis.patch.yml` 配置和 [Tencent/BrowserSkill](https://github.com/Tencent/BrowserSkill)
       提供的外部 `bsk` 前置条件。
+- [ ] BrowserSkill 首次运行检查已执行 `bsk --help`、`bsk status`，并确认浏览器扩展已安装且
+      会话可用；找不到 `bsk` 时不能把本地导入能力误报为浏览器采集已验证。
 - [ ] `README.md`、`docs/dsh-installation.md`、`docs/browser-skill-integration.md` 和
       `docs/workspace-output.md` 已区分插件默认配置与 DSH 原生 Schedule overlay，并说明提醒不等于
       BrowserSkill 采集授权。
